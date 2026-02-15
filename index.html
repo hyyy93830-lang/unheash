@@ -3,52 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя личная страница</title>
+    <title>JSON Шифратор</title>
     <style>
-        /* Это стили, чтобы сайт был красивым */
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        h1 { margin-bottom: 10px; }
-        p { opacity: 0.9; }
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: white;
-            color: #764ba2;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .button:hover { transform: scale(1.05); }
+        body { font-family: sans-serif; background: #1a1a2e; color: white; display: flex; justify-content: center; padding: 20px; }
+        .container { background: #16213e; padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        textarea { width: 100%; height: 80px; margin-top: 10px; border-radius: 8px; border: none; padding: 10px; box-sizing: border-box; }
+        .btns { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .enc { background: #0f3460; color: white; }
+        .dec { background: #e94560; color: white; }
+        button:hover { opacity: 0.8; transform: scale(1.02); }
+        h2 { text-align: center; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>Привет! Я на GitHub 🚀</h1>
-        <p>Это мой первый настоящий сайт.</p>
-        <p>Я только учусь, но уже получается круто!</p>
-        <a href="#" class="button">Написать мне</a>
+<div class="container">
+    <h2>🔐 Шифратор JSON/Текста</h2>
+    
+    <textarea id="input" placeholder="Введи текст или JSON сюда..."></textarea>
+    
+    <div class="btns">
+        <button class="enc" onclick="process(true)">Зашифровать</button>
+        <button class="dec" onclick="process(false)">Расшифровать</button>
     </div>
+
+    <textarea id="output" placeholder="Результат появится здесь..." readonly></textarea>
+</div>
+
+<script>
+    function process(isEncode) {
+        const input = document.getElementById('input').value;
+        const output = document.getElementById('output');
+        
+        try {
+            if (isEncode) {
+                // Превращаем в Base64
+                output.value = btoa(unescape(encodeURIComponent(input)));
+            } else {
+                // Декодируем обратно
+                output.value = decodeURIComponent(escape(atob(input)));
+            }
+        } catch (e) {
+            output.value = "Ошибка: неверный формат данных!";
+        }
+    }
+</script>
 
 </body>
 </html>
