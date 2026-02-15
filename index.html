@@ -3,108 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Text Tool</title>
+    <title>DevMultiTool Pro</title>
     <style>
-        :root { --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --accent: #0071e3; }
-        .dark { --bg: #121212; --card: #1e1e1e; --text: #f5f5f7; --accent: #0a84ff; }
+        :root { --main: #007aff; --bg: #f2f2f7; --glass: rgba(255, 255, 255, 0.7); }
+        body { background: var(--bg); font-family: -apple-system, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; color: #1d1d1f; }
+        .container { width: 100%; max-width: 500px; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        h1 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 5px; }
+        p { color: #86868b; font-size: 14px; margin: 0; }
+
+        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; transition: 0.3s; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .app { width: 100%; max-width: 600px; }
-        .card { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        
-        h1 { font-size: 24px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        textarea { width: 100%; height: 120px; border: 1px solid #d2d2d7; border-radius: 12px; padding: 15px; box-sizing: border-box; font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.2s; background: transparent; color: inherit; }
-        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,113,227,0.1); }
-        
-        .stats { font-size: 12px; color: #86868b; margin-bottom: 15px; display: flex; gap: 15px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        
-        button { padding: 12px; border: none; border-radius: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 14px; }
-        .primary { background: var(--accent); color: white; }
-        .secondary { background: #e8e8ed; color: #1d1d1f; }
-        button:hover { opacity: 0.8; transform: translateY(-1px); }
-        
-        .theme-btn { font-size: 20px; background: none; border: none; cursor: pointer; }
+        textarea { width: 100%; height: 120px; border-radius: 12px; border: 1px solid #d2d2d7; padding: 12px; box-sizing: border-box; font-family: monospace; font-size: 14px; outline: none; transition: 0.3s; background: rgba(255,255,255,0.5); }
+        textarea:focus { border-color: var(--main); box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        button { padding: 12px 5px; border: none; border-radius: 10px; background: #fff; color: var(--main); font-weight: 600; font-size: 11px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e5e5ea; text-transform: uppercase; }
+        button:hover { background: var(--main); color: #fff; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+
+        .res-area { margin-top: 20px; position: relative; }
+        .copy-hint { position: absolute; top: -15px; right: 5px; font-size: 10px; color: var(--main); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="app">
+<div class="container">
+    <div class="header">
+        <h1>МУЛЬТИ ИНСТРУМЕНТЫ</h1>
+        <p>Универсальный набор разработчика</p>
+    </div>
+
     <div class="card">
-        <h1>
-            <span>Инструменты Текста</span>
-            <button class="theme-btn" onclick="document.body.classList.toggle('dark')">🌓</button>
-        </h1>
-
-        <textarea id="input" placeholder="Введите ваш текст здесь..." oninput="updateStats()"></textarea>
+        <textarea id="input" placeholder="Введите текст или код для обработки..."></textarea>
         
-        <div class="stats">
-            <span id="charCount">Символов: 0</span>
-            <span id="wordCount">Слов: 0</span>
+        <div class="menu-grid">
+            <button onclick="tool('jsonToUni')">JSON > UNICODE</button>
+            <button onclick="tool('uniToJSON')">UNICODE > JSON</button>
+            <button onclick="tool('obf')">ОБФУСКАЦИЯ</button>
+            <button onclick="tool('deObf')">ДЕОБФУСКАЦИЯ</button>
+            <button onclick="tool('min')">МИНИФИКАЦИЯ</button>
+            <button onclick="tool('fmt')">ФОРМАТИРОВАНИЕ</button>
+            <button style="grid-column: span 2;" onclick="tool('uuid')">СГЕНЕРИРОВАТЬ UUID</button>
         </div>
 
-        <div class="grid">
-            <button class="primary" onclick="process('toUni')">В Unicode (\u0000)</button>
-            <button class="primary" onclick="process('fromUni')">Из Unicode</button>
-            <button class="primary" onclick="process('toB64')">В Base64 (Код)</button>
-            <button class="primary" onclick="process('fromB64')">Из Base64</button>
-            <button class="secondary" onclick="process('reverse')">Перевернуть</button>
-            <button class="secondary" onclick="process('clear')">Очистить всё</button>
-        </div>
-
-        <textarea id="output" placeholder="Здесь появится результат..." readonly></textarea>
-        
-        <div class="grid">
-            <button class="secondary" onclick="copy()">Скопировать</button>
-            <button class="secondary" onclick="download()">Скачать .txt</button>
+        <div class="res-area">
+            <span class="copy-hint">Кликни, чтобы скопировать результат</span>
+            <textarea id="output" placeholder="Результат появится здесь..." readonly onclick="copy()"></textarea>
         </div>
     </div>
 </div>
 
 <script>
-    function updateStats() {
-        const text = document.getElementById('input').value;
-        document.getElementById('charCount').innerText = 'Символов: ' + text.length;
-        document.getElementById('wordCount').innerText = 'Слов: ' + (text.trim() ? text.trim().split(/\s+/).length : 0);
-    }
-
-    function process(type) {
+    function tool(type) {
         const input = document.getElementById('input').value;
-        const output = document.getElementById('output');
+        const out = document.getElementById('output');
         
         try {
-            if (type === 'toUni') {
-                output.value = input.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
-            } else if (type === 'fromUni') {
-                output.value = input.replace(/\\u([\d\w]{4})/gi, (m, g) => String.fromCharCode(parseInt(g, 16)));
-            } else if (type === 'toB64') {
-                output.value = btoa(unescape(encodeURIComponent(input)));
-            } else if (type === 'fromB64') {
-                output.value = decodeURIComponent(escape(atob(input)));
-            } else if (type === 'reverse') {
-                output.value = input.split('').reverse().join('');
-            } else if (type === 'clear') {
-                document.getElementById('input').value = '';
-                output.value = '';
-                updateStats();
+            if(type === 'jsonToUni') {
+                out.value = input.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+            } 
+            else if(type === 'uniToJSON') {
+                out.value = input.replace(/\\u([\d\w]{4})/gi, (m, g) => String.fromCharCode(parseInt(g, 16)));
             }
-        } catch(e) { output.value = "Ошибка данных!"; }
+            else if(type === 'obf') {
+                // Базовая обфускация через hex-кодирование
+                out.value = "eval(unescape('" + escape(input) + "'))";
+            }
+            else if(type === 'deObf') {
+                // Попытка извлечь содержимое из eval/unescape
+                const match = input.match(/unescape\('([^']+)'\)/);
+                out.value = match ? unescape(match[1]) : "Ошибка: неверный формат обфускации";
+            }
+            else if(type === 'min') {
+                out.value = input.replace(/\s+/g, ' ').replace(/\n/g, '').trim();
+            }
+            else if(type === 'fmt') {
+                try {
+                    const obj = JSON.parse(input);
+                    out.value = JSON.stringify(obj, null, 4);
+                } catch(e) {
+                    out.value = "Ошибка: Для форматирования нужен JSON!";
+                }
+            }
+            else if(type === 'uuid') {
+                out.value = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                );
+            }
+        } catch(e) { out.value = "Произошла ошибка обработки!"; }
     }
 
     function copy() {
         const out = document.getElementById('output');
+        if(!out.value) return;
         out.select();
         document.execCommand('copy');
-        alert('Скопировано в буфер!');
-    }
-
-    function download() {
-        const text = document.getElementById('output').value;
-        const blob = new Blob([text], {type: "text/plain"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "result.txt";
-        a.click();
+        alert("Результат скопирован!");
     }
 </script>
 
