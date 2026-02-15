@@ -3,55 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Unicode Tool</title>
+    <title>Ultimate Text Tool</title>
     <style>
-        body { font-family: monospace; background: #121212; color: #00FF00; display: flex; justify-content: center; padding: 20px; }
-        .box { background: #1e1e1e; padding: 20px; border: 2px solid #00FF00; width: 100%; max-width: 500px; box-shadow: 0 0 15px #00FF00; }
-        h2 { text-align: center; color: #fff; text-transform: uppercase; }
-        textarea { width: 100%; height: 120px; background: #000; color: #00FF00; border: 1px solid #00FF00; padding: 10px; box-sizing: border-box; margin-bottom: 10px; font-size: 14px; }
-        .btns { display: flex; gap: 10px; }
-        button { flex: 1; padding: 15px; background: #00FF00; color: #000; border: none; font-weight: bold; cursor: pointer; }
-        button:hover { background: #fff; }
+        :root { --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --accent: #0071e3; }
+        .dark { --bg: #121212; --card: #1e1e1e; --text: #f5f5f7; --accent: #0a84ff; }
+        
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; transition: 0.3s; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .app { width: 100%; max-width: 600px; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        h1 { font-size: 24px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        textarea { width: 100%; height: 120px; border: 1px solid #d2d2d7; border-radius: 12px; padding: 15px; box-sizing: border-box; font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.2s; background: transparent; color: inherit; }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,113,227,0.1); }
+        
+        .stats { font-size: 12px; color: #86868b; margin-bottom: 15px; display: flex; gap: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        
+        button { padding: 12px; border: none; border-radius: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .primary { background: var(--accent); color: white; }
+        .secondary { background: #e8e8ed; color: #1d1d1f; }
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+        
+        .theme-btn { font-size: 20px; background: none; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>[ UNICODE CRYPTOR ]</h2>
-    
-    <textarea id="input" placeholder="Введите текст (например: Привет)"></textarea>
-    
-    <div class="btns">
-        <button onclick="toUnicode()">ШИФРОВАТЬ</button>
-        <button onclick="fromUnicode()">РАСШИФРОВАТЬ</button>
-    </div>
+<div class="app">
+    <div class="card">
+        <h1>
+            <span>Инструменты Текста</span>
+            <button class="theme-btn" onclick="document.body.classList.toggle('dark')">🌓</button>
+        </h1>
 
-    <textarea id="output" placeholder="Результат (например: \u041f\u0440...)" readonly></textarea>
+        <textarea id="input" placeholder="Введите ваш текст здесь..." oninput="updateStats()"></textarea>
+        
+        <div class="stats">
+            <span id="charCount">Символов: 0</span>
+            <span id="wordCount">Слов: 0</span>
+        </div>
+
+        <div class="grid">
+            <button class="primary" onclick="process('toUni')">В Unicode (\u0000)</button>
+            <button class="primary" onclick="process('fromUni')">Из Unicode</button>
+            <button class="primary" onclick="process('toB64')">В Base64 (Код)</button>
+            <button class="primary" onclick="process('fromB64')">Из Base64</button>
+            <button class="secondary" onclick="process('reverse')">Перевернуть</button>
+            <button class="secondary" onclick="process('clear')">Очистить всё</button>
+        </div>
+
+        <textarea id="output" placeholder="Здесь появится результат..." readonly></textarea>
+        
+        <div class="grid">
+            <button class="secondary" onclick="copy()">Скопировать</button>
+            <button class="secondary" onclick="download()">Скачать .txt</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Текст -> \u0000
-    function toUnicode() {
-        const str = document.getElementById('input').value;
-        let unicode = '';
-        for (let i = 0; i < str.length; i++) {
-            let hex = str.charCodeAt(i).toString(16).padStart(4, '0');
-            unicode += '\\u' + hex;
-        }
-        document.getElementById('output').value = unicode;
+    function updateStats() {
+        const text = document.getElementById('input').value;
+        document.getElementById('charCount').innerText = 'Символов: ' + text.length;
+        document.getElementById('wordCount').innerText = 'Слов: ' + (text.trim() ? text.trim().split(/\s+/).length : 0);
     }
 
-    // \u0000 -> Текст
-    function fromUnicode() {
-        const str = document.getElementById('input').value;
+    function process(type) {
+        const input = document.getElementById('input').value;
+        const output = document.getElementById('output');
+        
         try {
-            const decoded = str.replace(/\\u([\d\w]{4})/gi, (match, grp) => {
-                return String.fromCharCode(parseInt(grp, 16));
-            });
-            document.getElementById('output').value = decoded;
-        } catch (e) {
-            document.getElementById('output').value = "ОШИБКА: Неверный формат!";
-        }
+            if (type === 'toUni') {
+                output.value = input.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+            } else if (type === 'fromUni') {
+                output.value = input.replace(/\\u([\d\w]{4})/gi, (m, g) => String.fromCharCode(parseInt(g, 16)));
+            } else if (type === 'toB64') {
+                output.value = btoa(unescape(encodeURIComponent(input)));
+            } else if (type === 'fromB64') {
+                output.value = decodeURIComponent(escape(atob(input)));
+            } else if (type === 'reverse') {
+                output.value = input.split('').reverse().join('');
+            } else if (type === 'clear') {
+                document.getElementById('input').value = '';
+                output.value = '';
+                updateStats();
+            }
+        } catch(e) { output.value = "Ошибка данных!"; }
+    }
+
+    function copy() {
+        const out = document.getElementById('output');
+        out.select();
+        document.execCommand('copy');
+        alert('Скопировано в буфер!');
+    }
+
+    function download() {
+        const text = document.getElementById('output').value;
+        const blob = new Blob([text], {type: "text/plain"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "result.txt";
+        a.click();
     }
 </script>
 
