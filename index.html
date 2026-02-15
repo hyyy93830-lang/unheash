@@ -3,105 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevMultiTool Pro</title>
+    <title>DevTool Pro | Bedrock Edition</title>
     <style>
-        :root { --main: #007aff; --bg: #f2f2f7; --glass: rgba(255, 255, 255, 0.7); }
-        body { background: var(--bg); font-family: -apple-system, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; color: #1d1d1f; }
-        .container { width: 100%; max-width: 500px; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        :root { --blue: #007aff; --bg: #f5f5f7; --card: rgba(255, 255, 255, 0.8); }
+        body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; color: #1d1d1f; }
+        .wrapper { width: 100%; max-width: 500px; animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .header { text-align: center; margin-bottom: 25px; }
-        h1 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 5px; }
-        p { color: #86868b; font-size: 14px; margin: 0; }
+        header { text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin: 0; }
+        .subtitle { color: #86868b; font-size: 14px; margin-top: 5px; }
 
-        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .card { background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; padding: 24px; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
         
-        textarea { width: 100%; height: 120px; border-radius: 12px; border: 1px solid #d2d2d7; padding: 12px; box-sizing: border-box; font-family: monospace; font-size: 14px; outline: none; transition: 0.3s; background: rgba(255,255,255,0.5); }
-        textarea:focus { border-color: var(--main); box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
+        textarea { width: 100%; height: 140px; border-radius: 14px; border: 1px solid #d2d2d7; padding: 15px; box-sizing: border-box; font-family: "SF Mono", Menlo, monospace; font-size: 13px; outline: none; transition: 0.2s; background: rgba(255,255,255,0.4); margin-bottom: 15px; resize: vertical; }
+        textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0,122,255,0.15); }
 
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        button { padding: 12px 5px; border: none; border-radius: 10px; background: #fff; color: var(--main); font-weight: 600; font-size: 11px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e5e5ea; text-transform: uppercase; }
-        button:hover { background: var(--main); color: #fff; transform: translateY(-1px); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button { padding: 14px 10px; border: none; border-radius: 12px; background: #fff; color: var(--blue); font-weight: 600; font-size: 11px; cursor: pointer; transition: 0.3s; border: 1px solid #e5e5ea; text-transform: uppercase; letter-spacing: 0.5px; }
+        button:hover { background: var(--blue); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,122,255,0.2); }
         button:active { transform: translateY(0); }
+        .full { grid-column: span 2; background: #f2f2f7; color: #1d1d1f; }
 
-        .res-area { margin-top: 20px; position: relative; }
-        .copy-hint { position: absolute; top: -15px; right: 5px; font-size: 10px; color: var(--main); font-weight: bold; }
+        .res-container { margin-top: 25px; }
+        .res-label { font-size: 12px; font-weight: 600; color: #86868b; margin-bottom: 8px; display: block; text-align: center; }
+        #output { height: 100px; background: #fff; border-style: dashed; cursor: pointer; color: #000; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
+<div class="wrapper">
+    <header>
         <h1>МУЛЬТИ ИНСТРУМЕНТЫ</h1>
-        <p>Универсальный набор разработчика</p>
-    </div>
+        <div class="subtitle">Универсальный набор разработчика</div>
+    </header>
 
     <div class="card">
-        <textarea id="input" placeholder="Введите текст или код для обработки..."></textarea>
+        <textarea id="input" placeholder="Вставьте ваш JSON или JS-скрипт сюда..."></textarea>
         
-        <div class="menu-grid">
-            <button onclick="tool('jsonToUni')">JSON > UNICODE</button>
-            <button onclick="tool('uniToJSON')">UNICODE > JSON</button>
-            <button onclick="tool('obf')">ОБФУСКАЦИЯ</button>
-            <button onclick="tool('deObf')">ДЕОБФУСКАЦИЯ</button>
-            <button onclick="tool('min')">МИНИФИКАЦИЯ</button>
-            <button onclick="tool('fmt')">ФОРМАТИРОВАНИЕ</button>
-            <button style="grid-column: span 2;" onclick="tool('uuid')">СГЕНЕРИРОВАТЬ UUID</button>
+        <div class="grid">
+            <button onclick="handle('jsonToUni')">JSON > UNICODE</button>
+            <button onclick="handle('uniToJSON')">UNICODE > JSON</button>
+            <button onclick="handle('obf')">ОБФУСКАЦИЯ JS</button>
+            <button onclick="handle('deObf')">ДЕОБФУСКАЦИЯ</button>
+            <button onclick="handle('min')">МИНИФИКАЦИЯ</button>
+            <button onclick="handle('fmt')">ФОРМАТИРОВАНИЕ</button>
+            <button class="full" onclick="handle('uuid')">СГЕНЕРИРОВАТЬ UUID</button>
         </div>
 
-        <div class="res-area">
-            <span class="copy-hint">Кликни, чтобы скопировать результат</span>
-            <textarea id="output" placeholder="Результат появится здесь..." readonly onclick="copy()"></textarea>
+        <div class="res-container">
+            <label class="res-label">РЕЗУЛЬТАТ (НАЖМИ ЧТОБЫ КОПИРОВАТЬ)</label>
+            <textarea id="output" readonly onclick="copyAll()" placeholder="Результат появится здесь..."></textarea>
         </div>
     </div>
 </div>
 
 <script>
-    function tool(type) {
+    function handle(action) {
         const input = document.getElementById('input').value;
         const out = document.getElementById('output');
         
         try {
-            if(type === 'jsonToUni') {
-                out.value = input.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
-            } 
-            else if(type === 'uniToJSON') {
-                out.value = input.replace(/\\u([\d\w]{4})/gi, (m, g) => String.fromCharCode(parseInt(g, 16)));
+            switch(action) {
+                case 'jsonToUni':
+                    out.value = input.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+                    break;
+                case 'uniToJSON':
+                    out.value = input.replace(/\\u([\d\w]{4})/gi, (m, g) => String.fromCharCode(parseInt(g, 16)));
+                    break;
+                case 'obf':
+                    // Продвинутая QuickJS обфускация
+                    let hex = "";
+                    for (let i = 0; i < input.length; i++) {
+                        hex += "\\x" + input.charCodeAt(i).toString(16).padStart(2, '0');
+                    }
+                    const randVar = "_0x" + Math.random().toString(16).slice(2, 6);
+                    out.value = `const ${randVar} = ["\\x65\\x76\\x61\\x6c","${hex}"]; window[${randVar}[0]]("${hex}");`;
+                    break;
+                case 'deObf':
+                    const match = input.match(/"((\\x[0-9a-fA-F]{2})+)"/);
+                    if (match) {
+                        out.value = match[1].replace(/\\x([0-9a-fA-F]{2})/g, (m, g) => String.fromCharCode(parseInt(g, 16)));
+                    } else {
+                        out.value = "Не удалось распознать формат!";
+                    }
+                    break;
+                case 'min':
+                    out.value = input.replace(/\s+/g, ' ').replace(/\/\*.*?\*\/|\/\/.*/g, '').trim();
+                    break;
+                case 'fmt':
+                    out.value = JSON.stringify(JSON.parse(input), null, 4);
+                    break;
+                case 'uuid':
+                    out.value = crypto.randomUUID();
+                    break;
             }
-            else if(type === 'obf') {
-                // Базовая обфускация через hex-кодирование
-                out.value = "eval(unescape('" + escape(input) + "'))";
-            }
-            else if(type === 'deObf') {
-                // Попытка извлечь содержимое из eval/unescape
-                const match = input.match(/unescape\('([^']+)'\)/);
-                out.value = match ? unescape(match[1]) : "Ошибка: неверный формат обфускации";
-            }
-            else if(type === 'min') {
-                out.value = input.replace(/\s+/g, ' ').replace(/\n/g, '').trim();
-            }
-            else if(type === 'fmt') {
-                try {
-                    const obj = JSON.parse(input);
-                    out.value = JSON.stringify(obj, null, 4);
-                } catch(e) {
-                    out.value = "Ошибка: Для форматирования нужен JSON!";
-                }
-            }
-            else if(type === 'uuid') {
-                out.value = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-                );
-            }
-        } catch(e) { out.value = "Произошла ошибка обработки!"; }
+        } catch(e) {
+            out.value = "Ошибка: Проверьте правильность входных данных!";
+        }
     }
 
-    function copy() {
+    function copyAll() {
         const out = document.getElementById('output');
         if(!out.value) return;
         out.select();
         document.execCommand('copy');
-        alert("Результат скопирован!");
+        
+        const label = document.querySelector('.res-label');
+        label.innerText = "СКОПИРОВАНО!";
+        label.style.color = "#34c759";
+        setTimeout(() => {
+            label.innerText = "РЕЗУЛЬТАТ (НАЖМИ ЧТОБЫ КОПИРОВАТЬ)";
+            label.style.color = "#86868b";
+        }, 2000);
     }
 </script>
 
