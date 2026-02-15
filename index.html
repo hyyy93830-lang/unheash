@@ -3,49 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Шифратор</title>
+    <title>Minecraft Unicode Tool</title>
     <style>
-        body { font-family: sans-serif; background: #1a1a2e; color: white; display: flex; justify-content: center; padding: 20px; }
-        .container { background: #16213e; padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        textarea { width: 100%; height: 80px; margin-top: 10px; border-radius: 8px; border: none; padding: 10px; box-sizing: border-box; }
-        .btns { display: flex; gap: 10px; margin-top: 15px; }
-        button { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .enc { background: #0f3460; color: white; }
-        .dec { background: #e94560; color: white; }
-        button:hover { opacity: 0.8; transform: scale(1.02); }
-        h2 { text-align: center; font-size: 1.2rem; }
+        body { font-family: monospace; background: #121212; color: #00FF00; display: flex; justify-content: center; padding: 20px; }
+        .box { background: #1e1e1e; padding: 20px; border: 2px solid #00FF00; width: 100%; max-width: 500px; box-shadow: 0 0 15px #00FF00; }
+        h2 { text-align: center; color: #fff; text-transform: uppercase; }
+        textarea { width: 100%; height: 120px; background: #000; color: #00FF00; border: 1px solid #00FF00; padding: 10px; box-sizing: border-box; margin-bottom: 10px; font-size: 14px; }
+        .btns { display: flex; gap: 10px; }
+        button { flex: 1; padding: 15px; background: #00FF00; color: #000; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #fff; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🔐 Шифратор JSON/Текста</h2>
+<div class="box">
+    <h2>[ UNICODE CRYPTOR ]</h2>
     
-    <textarea id="input" placeholder="Введи текст или JSON сюда..."></textarea>
+    <textarea id="input" placeholder="Введите текст (например: Привет)"></textarea>
     
     <div class="btns">
-        <button class="enc" onclick="process(true)">Зашифровать</button>
-        <button class="dec" onclick="process(false)">Расшифровать</button>
+        <button onclick="toUnicode()">ШИФРОВАТЬ</button>
+        <button onclick="fromUnicode()">РАСШИФРОВАТЬ</button>
     </div>
 
-    <textarea id="output" placeholder="Результат появится здесь..." readonly></textarea>
+    <textarea id="output" placeholder="Результат (например: \u041f\u0440...)" readonly></textarea>
 </div>
 
 <script>
-    function process(isEncode) {
-        const input = document.getElementById('input').value;
-        const output = document.getElementById('output');
-        
+    // Текст -> \u0000
+    function toUnicode() {
+        const str = document.getElementById('input').value;
+        let unicode = '';
+        for (let i = 0; i < str.length; i++) {
+            let hex = str.charCodeAt(i).toString(16).padStart(4, '0');
+            unicode += '\\u' + hex;
+        }
+        document.getElementById('output').value = unicode;
+    }
+
+    // \u0000 -> Текст
+    function fromUnicode() {
+        const str = document.getElementById('input').value;
         try {
-            if (isEncode) {
-                // Превращаем в Base64
-                output.value = btoa(unescape(encodeURIComponent(input)));
-            } else {
-                // Декодируем обратно
-                output.value = decodeURIComponent(escape(atob(input)));
-            }
+            const decoded = str.replace(/\\u([\d\w]{4})/gi, (match, grp) => {
+                return String.fromCharCode(parseInt(grp, 16));
+            });
+            document.getElementById('output').value = decoded;
         } catch (e) {
-            output.value = "Ошибка: неверный формат данных!";
+            document.getElementById('output').value = "ОШИБКА: Неверный формат!";
         }
     }
 </script>
